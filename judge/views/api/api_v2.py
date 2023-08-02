@@ -474,6 +474,22 @@ class APIProblemDetail(APIDetailView):
             'is_public': problem.is_public,
         }
 
+    def update_problem(self, request, *args, **kwargs):
+        # Ensure their creation key is correct.
+        if request.POST.get("creation_key", None) != "TEST":
+            raise APILoginRequiredException
+        print(args)
+        print(kwargs)
+        print(request.POST)
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == "POST":
+            try:
+                self.update_problem(request, *args, **kwargs)
+            except Exception as e:
+                return self.get_error(e)
+        return super().dispatch(request, *args, **kwargs)
+
 
 class APIUserList(APIListView):
     model = Profile
